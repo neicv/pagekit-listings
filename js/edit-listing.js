@@ -9,6 +9,7 @@ $(function () {
     var vue = new Vue({
         el: '#edit-listing',
         data: $data,
+        oldLink: '',
         methods: {
             toggle: function (coll, type) {
                 coll.status = !coll.status ? 1 : 0;
@@ -44,7 +45,46 @@ $(function () {
                     UIkit.notify('Couldn\'t Save');
                 })
             },
-            remove: function (id, type, title) {
+            
+            removeOldFile: function(url) {
+                if(url === undefined) return;
+
+                var path = url.split('/');
+                var name = path.pop();
+
+                if(path[0] != "storage") return;
+                path.shift();
+                path = path.join('/');
+
+                this.$http.post('system/finder', {
+                    path: path,
+                    root: "storage"
+                }).then(function(res) {
+                    // check mime type to ensure url points a single file
+                    var isFile = false;
+                    res.data.items.forEach(function(item) {
+                        if(item.name == name && item.mime == "application/file" && item.writable)
+                            isFile = true;
+                    });
+
+                    if(!isFile) return;
+
+                    // user confirmation
+                    if(confirm('Alte verknüpfte Datei (' + url + ') löschen?')) {
+                        this.$http.post('system/finder/removefiles', {
+                            names: [ name ],
+                            path: path,
+                            root: "storage"
+                        }).then(function() {
+                            UIkit.notify(url + ' Deleted');
+                        }).catch(function () {
+                            UIkit.notify('Couldn\'t Delete');
+                        });
+                    }
+                });
+            },
+
+            remove: function (id, type, title, item) {
                 var vm = this;
                 UIkit.modal.confirm("Delete " + this.$options.filters.capitalize(type) + "? <em>" + title + "</em><br><span class='uk-text-small uk-text-bold uk-text-warning'><i class='uk-icon-warning uk-text-warning'></i> This cannot be undone</span>", function () {
 
@@ -66,7 +106,7 @@ $(function () {
                             } else if (type === 'item') {
 
                                 Vue.delete(vm.listing.categories[res.data.item.category_id].items, id);
-
+                                this.removeOldFile(item.link);
                             }
                         }).catch(function () {
                         UIkit.notify('Couldn\'t Delete');
@@ -87,6 +127,7 @@ $(function () {
                 }
                 data = data || {category_id: id};
                 setModel('items', data);
+                this.oldLink = data.link;
                 this.$refs.itemmodal.open();
             },
 
@@ -141,6 +182,8 @@ $(function () {
                         Vue.set(this.listing.categories[res.data.item.category_id].items, res.data.item.id.toString(), res.data.item);
 
                         this.$refs.itemmodal.close();
+                         this.removeOldFile(this.oldLink);
+                        $('#sortable-categories').trigger('change.uk.sortable');
                         UIkit.notify('Item Saved');
 
                     }).catch(function (e) {
@@ -184,7 +227,7 @@ $(function () {
             Vue.set(this.$data.item_model, 'link', model.link || '');
             Vue.set(this.$data.item_model, 'actions', model.actions || '');
             Vue.set(this.$data.item_model, 'image', model.image || '');
-            Vue.set(this.$data.item_model, 'position', ((typeof(model.position) !== 'undefined') ? String(model.position) : false) || _.size(this.$data.listing.categories));
+            Vue.set(this.$data.item_model, 'position', ((typeof(model.position) !== 'undefined') ? String(model.position) : false) || -1 * _.size(this.$data.listing.categories[this.$data.item_model.category_id].items));
             Vue.set(this.$data.item_model, 'status', model.status || 0);
             Vue.set(this.$data.item_model, 'price', model.price || '');
             Vue.set(this.$data.item_model, 'tags', model.tags || []);
@@ -197,7 +240,7 @@ $(function () {
             positions.push({id: $(row).data().id, position: i});
         });
         vue.savePositions(positions, 'categories')
-    }, 100));
+    }, 1000));
 
     $('.sortable-items').on('change.uk.nestable', _.debounce(function (e, s, el, a) {
 
@@ -217,6 +260,6 @@ $(function () {
 
         });
         vue.savePositions(positions, 'items');
-    }, 100));
+    }, 1000));
 
 });

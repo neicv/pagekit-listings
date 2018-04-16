@@ -22,8 +22,8 @@ return [
                 $table->addColumn('title', 'string', ['length' => 255]);
                 $table->addColumn('description', 'string', ['length' => 255]);
                 $table->addColumn('template_id', 'integer', ['unsigned' => true, 'length' => 10]);
-                $table->addColumn('featured_from', 'time', ['notnull' => false, 'length' => 11]);
-                $table->addColumn('featured_to', 'time', ['notnull' => false, 'length' => 11]);
+                $table->addColumn('featured_from', 'integer', ['notnull' => false, 'length' => 11]);
+                $table->addColumn('featured_to', 'integer', ['notnull' => false, 'length' => 11]);
                 $table->addColumn('position', 'smallint');
                 $table->addColumn('status', 'smallint');
                 $table->setPrimaryKey(['id']);
@@ -43,8 +43,8 @@ return [
                 $table->addColumn('image', 'string', ['length' => 255]);
                 $table->addColumn('position', 'smallint');
                 $table->addColumn('status', 'smallint');
-                $table->addColumn('featured_from', 'time', ['notnull' => false, 'length' => 11]);
-                $table->addColumn('featured_to', 'time', ['notnull' => false, 'length' => 11]);
+                $table->addColumn('featured_from', 'integer', ['notnull' => false, 'length' => 11]);
+                $table->addColumn('featured_to', 'integer', ['notnull' => false, 'length' => 11]);
                 $table->setPrimaryKey(['id']);
             });
         }
@@ -67,8 +67,8 @@ return [
                 $table->addColumn('status', 'smallint');
                 $table->addColumn('price', 'float', ['default' => 0.00]);
                 $table->addColumn('tags', 'json_array');
-                $table->addColumn('featured_from', 'time', ['notnull' => false, 'length' => 11]);
-                $table->addColumn('featured_to', 'time', ['notnull' => false, 'length' => 11]);
+                $table->addColumn('featured_from', 'integer', ['notnull' => false, 'length' => 11]);
+                $table->addColumn('featured_to', 'integer', ['notnull' => false, 'length' => 11]);
                 $table->setPrimaryKey(['id']);
 
             });
@@ -93,7 +93,7 @@ return [
 
         $now = time();
         $app['db']->insert('@listings_template', [
-            'id'=>0,
+            'id'=>1,
             'created_by' => 1,
             'created_on' => $now,
             'modified_by' => 1,
@@ -126,9 +126,9 @@ return [
             'modified_on' => $now,
             'title' => 'Sample List',
             'description' => 'Example of a simple list.<strong> Add the <em>code</em> to any page to view it.</strong>',
-            'template_id'=>0,
+            'template_id'=>1,
             'featured_from'=>1480575600,
-            'featured_to'=>1480633200,
+            'featured_to'=>2060288885,
             'position'=>0,
             'status'=>1
         ]);
@@ -145,8 +145,8 @@ return [
             'image' => '',
             'position' => 0,
             'status' => 1,
-            'featured_from'=>'',
-            'featured_to'=>''
+            'featured_from'=>1480575600,
+            'featured_to'=>2060288885
         ]);
 
         $app['db']->insert('@listings_category', [
@@ -161,8 +161,8 @@ return [
             'image' => '',
             'position' => 1,
             'status' => 1,
-            'featured_from'=>'',
-            'featured_to'=>''
+            'featured_from'=>1480575600,
+            'featured_to'=>2060288885
         ]);
 
         $app['db']->insert('@listings_item', [
@@ -182,8 +182,8 @@ return [
             'actions' => '{}',
             'price' => 10.99,
             'tags' => '{}',
-            'featured_from'=>'',
-            'featured_to'=>''
+            'featured_from'=>1480575600,
+            'featured_to'=>2060288885
         ]);
 
         $app['db']->insert('@listings_item', [
@@ -203,8 +203,8 @@ return [
             'actions' => '',
             'price' => 19.99,
             'tags' => '{}',
-            'featured_from'=>'',
-            'featured_to'=>''
+            'featured_from'=>1480575600,
+            'featured_to'=>2060288885
         ]);
 
     },

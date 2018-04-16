@@ -1,4 +1,12 @@
 # Changelog
+## 1.0.7 - April 17, 2018
+
+### Fixed 
+- MySQL intalling 
+- item positioning bugs
+
+### Addet 
+- confirmation dialog to delete old linked storage file for listing items
 
 ## 1.0.6 - January 23, 2017
 

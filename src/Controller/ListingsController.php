@@ -43,7 +43,7 @@ class ListingsController
             $user = App::user();
             $now = time();
 
-            if (!$user->hasAccess('listings: manage listings')) {
+            if (!$user->hasAccess('listings: manage lists')) {
                 App::abort(403, __('Insufficient User Rights.'));
             }
 

@@ -195,7 +195,7 @@
                                                     <a href=""
                                                        class="uk-hidden uk-animation-slide-right uk-icon-hover uk-icon-trash-o"
                                                        data-uk-tooltip title="{{ 'Delete Item' | trans}}"
-                                                       @click.stop.prevent="remove(item.id, 'item', item.title)"></a>
+                                                       @click.stop.prevent="remove(item.id, 'item', item.title, item)"></a>
                                                 </div>
                                             </div>
                                         </li>
